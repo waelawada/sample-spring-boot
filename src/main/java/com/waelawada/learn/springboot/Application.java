@@ -7,17 +7,25 @@ import com.waelawada.learn.springboot.dao.UserDao;
 import com.waelawada.learn.springboot.domain.User;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
+import org.springframework.boot.builder.SpringApplicationBuilder;
+import org.springframework.boot.context.web.SpringBootServletInitializer;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 
+import javax.servlet.ServletContext;
+import javax.servlet.ServletException;
+
 @Configuration
 @EnableAutoConfiguration
 @ComponentScan(basePackages = "com.waelawada.learn.springboot")
-public class Application {
+public class Application extends SpringBootServletInitializer {
+
+    private static Class<Application> applicationClass = Application.class;
+    private static ApplicationContext ctx;
 
     public static void main(String[] args) {
-        ApplicationContext ctx = SpringApplication.run(Application.class, args);
+        ctx = SpringApplication.run(applicationClass, args);
         UserDao userDao = ctx.getBean(UserDao.class);
 
         User sampleUser = new User();
@@ -37,6 +45,11 @@ public class Application {
         for (String beanName : beanNames) {
             System.out.println(beanName);
         }
+    }
+
+    @Override
+    protected SpringApplicationBuilder configure(SpringApplicationBuilder application) {
+        return application.sources(applicationClass);
     }
 
 }
